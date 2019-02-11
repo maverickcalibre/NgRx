@@ -1,6 +1,7 @@
 import {Product} from '../product'
 import * as fromRoot from '../../state/app.state'
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { ProductActions, ProductActionTypes } from './product.action';
 
 export interface State extends fromRoot.State {
     products: ProductState;
@@ -35,15 +36,46 @@ export const getProducts = createSelector(
     state => state.products
 );
 
-export function reducer(state = initialState, action): ProductState {
+export function reducer(state = initialState, action: ProductActions): ProductState {
     switch(action.type){
-        case 'TOGGLE_PRODUCT_CODE':
-            console.log('existing state: '+ JSON.stringify(state));
-            console.log('payload: '+ action.payload); 
+        case ProductActionTypes.ToggleProductCode:
+            //console.log('existing state: '+ JSON.stringify(state));
+            //console.log('payload: '+ action.payload); 
             return {
                 ...state,
                 showProductCode: action.payload
             };
+
+        case ProductActionTypes.SetCurrentProduct:
+            //console.log('existing state: '+ JSON.stringify(state));
+            //console.log('payload: '+ action.payload); 
+            return {
+                ...state,
+                currentProduct: {...action.payload}
+            };
+        
+        case ProductActionTypes.ClearCurrentProduct:
+            //console.log('existing state: '+ JSON.stringify(state));
+            //console.log('payload: '+ action.payload); 
+            return {
+                ...state,
+                currentProduct: null
+            };
+        
+        case ProductActionTypes.InitializeCurrentProduct:
+            //console.log('existing state: '+ JSON.stringify(state));
+            //console.log('payload: '+ action.payload); 
+            return {
+                ...state,
+                currentProduct: {
+                    id: 0,
+                    productName: '',
+                    productCode: 'New',
+                    description: '',
+                    starRating: 0
+                }
+            };
+            
         default:
             return state;
     }

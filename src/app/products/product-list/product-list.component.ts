@@ -6,6 +6,7 @@ import { Product } from '../product';
 import { ProductService } from '../product.service';
 import { Store, select, State } from '@ngrx/store';
 import * as fromProduct from '../state/product.reducer';
+import * as productActions from '../state/product.action'
 
 @Component({
   selector: 'pm-product-list',
@@ -28,7 +29,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
               private store: Store<fromProduct.State>) { }
 
   ngOnInit(): void {
-    this.sub = this.productService.selectedProductChanges$.subscribe(
+    //TODO: Unsubscribe
+    this.store.select(fromProduct.getCurrentProduct).subscribe(
       selectedProduct => this.selectedProduct = selectedProduct
     );
 
@@ -50,18 +52,16 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   checkChanged(value: boolean): void {
-    this.store.dispatch({
-      type: 'TOGGLE_PRODUCT_CODE',
-      payload: value
-    });
+    this.store.dispatch(new productActions.ToggleProductCode(value));
   }
 
   newProduct(): void {
-    this.productService.changeSelectedProduct(this.productService.newProduct());
+    //this.productService.changeSelectedProduct(this.productService.newProduct());
+    this.store.dispatch(new productActions.InitializeCurrentProduct());
   }
 
   productSelected(product: Product): void {
-    this.productService.changeSelectedProduct(product);
+    this.store.dispatch(new productActions.SetCurrentProduct(product));
   }
 
 }
