@@ -34,9 +34,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     //TODO: Unsubscribe
-    this.store.select(fromProduct.getCurrentProduct).subscribe(
-      selectedProduct => this.selectedProduct = selectedProduct
-    );
+    this.store.pipe(select(fromProduct.getCurrentProduct),
+      takeWhile(()=>this.componentActive))
+      .subscribe(selectedProduct => this.selectedProduct = selectedProduct);
 
     this.errorMessage$ = this.store.pipe(select(fromProduct.getError));
 
@@ -51,7 +51,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
     // );
 
     //TODO: Unsubscribe
-    this.store.pipe(select(fromProduct.getShowProductCode)).subscribe(
+    this.store.pipe(select(fromProduct.getShowProductCode),
+      takeWhile(()=>this.componentActive)).subscribe(
       showProductCode => {
         this.displayCode = showProductCode;
       }
